@@ -1,0 +1,24 @@
+{
+  "name": "amocrm-instructor-salary",
+  "version": "1.0.0",
+  "description": "Виджет служит для расчета сдельной зарплаты для инструкторов автошкол",
+  "main": "script.js",
+  "scripts": {
+    "build": "mkdir -p build && zip -r build/widget.zip *",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lup-/amocrm-instructor-salary.git"
+  },
+  "keywords": [
+    "amocrm",
+    "widget"
+  ],
+  "author": "Alexander Pavlov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lup-/amocrm-instructor-salary/issues"
+  },
+  "homepage": "https://github.com/lup-/amocrm-instructor-salary#readme"
+}
