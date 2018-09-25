@@ -1,8 +1,7 @@
-define(['jquery', './src/tabWidget.js', './src/pageWidget.js'], function ($, TabWidget, PageWidget) {
+define(['jquery', './src/pageWidget.js'], function ($, PageWidget) {
     return function () {
-        let widget = this;
         let settings = this.get_settings();
-        let widgetCode = 'instructorSalary';
+        let widgetCode = 'workaholics_auto';
 
         this.includeCSS = function () {
             $('head').append('<style>\n' +
@@ -46,23 +45,8 @@ define(['jquery', './src/tabWidget.js', './src/pageWidget.js'], function ($, Tab
             return true;
         };
 
-        this.showWidgetContext = function () {
-            console.log('showWidgetContext');
-            return true;
-        };
-
-        this.showWidgetForSelectedLeads = function (leads) {
-            console.log('showWidgetForSelectedLeads', leads);
-            return true;
-        };
-
         this.initWidget = function () {
             this.includeCSS();
-
-            this.addButtonToListContextMenu();
-
-            this.tabWidget = new TabWidget(widgetCode, settings);
-            this.tabWidget.initWidget();
 
             this.pageWidget = new PageWidget(widgetCode, settings);
             this.pageWidget.initWidget('leads');
@@ -71,9 +55,6 @@ define(['jquery', './src/tabWidget.js', './src/pageWidget.js'], function ($, Tab
         };
 
         this.bindActions = function () {
-            $('#'+widgetCode+'-contextTrigger').on('click', this.showWidgetContext.bind(this));
-
-            this.tabWidget.bindActions();
             this.pageWidget.bindActions();
 
             return true;
@@ -83,18 +64,20 @@ define(['jquery', './src/tabWidget.js', './src/pageWidget.js'], function ($, Tab
             return true;
         };
 
-        this.callbacks = {
+        let requiredCallbacks = {
             render: this.putWidgetToDOM.bind(this),
             init: this.initWidget.bind(this),
-            bind_actions: this.bindActions.bind(this),
-            leads: {
-                selected: (function () {
-                    let selectedLeads = this.list_selected().selected;
-                    this.showWidgetForSelectedLeads(selectedLeads);
-                }).bind(this)
-            },
-            destroy: this.destroyWidget.bind(this)
+            bind_actions: this.bindActions.bind(this)
         };
+
+        let additionalCallbacks = {
+            destroy: this.destroyWidget.bind(this),
+            onSave: function () {
+                return true;
+            }
+        };
+
+        this.callbacks = $.extend({}, requiredCallbacks, additionalCallbacks);
 
         return this;
     };

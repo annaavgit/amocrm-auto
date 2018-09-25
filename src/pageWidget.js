@@ -1,54 +1,48 @@
-define(['jquery'], function ($) {
+define(['jquery', './htmlTemplates.js'], function ($, templates) {
     return function (widgetCode, settings) {
         this.triggerId = widgetCode + '-mainMenuTrigger';
         this.entityId = widgetCode + 'Widget';
         this.settings = settings;
-        this.buttonTitle = 'Тест';
-        this.pageTitle = 'Тестовая страница';
+        this.buttonTitle = 'Автошкола';
+        this.pageTitle = 'Управление автошколой';
         this.iconClass = "icon-settings";
 
         this.actionsBindSuccess = false;
 
         this.getPageHTML = function () {
-            return "<div class=\"list  list-contacts list-no-sidebar\" id=\"list_page_holder\">\n" +
-                "    <div class=\"list__body clearfix\">\n" +
-                "        <div id=\"list__body-right\" class=\"list__body-right list__body-right_has-footer\">\n" +
-                "            <div class=\"list__body-right__top\">\n" +
-                "                <div class=\"list__top__preset\">\n" +
-                "                    <span class=\"list-top-nav__text-button list-top-nav__text-button_submenu js-list-top-nav__text-button_submenu list-top-nav__text-button_active h-text-overflow\"\n" +
-                "                          data-entity=\"" + this.entityId +"\">" + this.pageTitle + "</span>\n" +
-                "                </div>\n" +
-                "                <div class=\"list__top__actions\">\n" +
-                "                    <div class=\"list-top-nav__icon-button list-top-nav__icon-button_dark list-top-nav__icon-button_context\">\n" +
-                "                        <div class=\"button-input-wrapper button-input-more content__top__action__btn-more\">\n" +
-                "                            <button type=\"button\" class=\"button-input button-input-with-menu  \" tabindex=\"\" id=\"\" title=\"Еще\">\n" +
-                "                                <span class=\"button-input-inner button-input-more-inner\">\n" +
-                "                                    <svg class=\"svg-icon svg-controls--button-more-dims\"><use\n" +
-                "                                            xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n" +
-                "                                            xlink:href=\"#controls--button-more\"></use></svg>\n" +
-                "                                </span>\n" +
-                "                            </button>\n" +
-                "                            <ul class=\"button-input__context-menu \">\n" +
-                "                            </ul>\n" +
-                "                        </div>\n" +
-                "                    </div>\n" +
-                "                    <a href=\"#\" data-href=\"#\" class=\"button-input  button-input_blue js-navigate-link\">\n" +
-                "                        <svg class=\"svg-icon svg-controls--button-add-dims\">\n" +
-                "                            <use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"#controls--button-add\"></use>\n" +
-                "                        </svg>\n" +
-                "                        <span class=\"button-input-inner__text button-input-inner__text_short\">Кнопка</span>\n" +
-                "                        <span class=\"button-input-inner__text\">Кнопка для чего-то</span>\n" +
-                "                    </a>\n" +
-                "                </div>\n" +
-                "            </div>\n" +
-                "            <div class=\"list__body__holder list__body__holder-table js-hs-wrapper hs-wrapper_hide-boundary hs-wrapper\" id=\"list_holder\">\n" +
-                "                <div class=\"custom-page-content\">\n" +
-                "                    Тут данные\n" +
-                "                </div>\n" +
-                "            </div>\n" +
-                "        </div>\n" +
-                "    </div>\n" +
-                "</div>";
+            let tabs = ["Группа 1", "Группа 2", "Группа 3"];
+            let header = [
+                {title: "ФИО инструктора", width: "30%", dataType: "name"},
+                {title: "Регион 1", width: "35%", dataType: "custom"},
+                {title: "Регион 2", width: "35%", dataType: "custom"}
+            ];
+
+            let rows = [
+                [{contents: "Комягина Тамара Георгиевна", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
+                [{contents: "Пелёвина Анна Владиленовна", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
+                [{contents: "Лагутин Сергей Аполлинариевич", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
+                [{contents: "Щукин Григорий Венедиктович", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
+                [{contents: "Ягеман Моисей Назарович", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}],
+                [{contents: "Бубнов Захар Титович", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
+                [{contents: "Пономарева Элеонора Ростиславовна", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
+                [{contents: "Арцишевский Мир Геннадиевич", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
+                [{contents: "Палванова Регина Родионовна", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
+                [{contents: "Колбягина Берта Петровна", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}],
+                [{contents: "Истлентьева Кристина Давидовна", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
+                [{contents: "Нагиева Алла Романовна", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
+                [{contents: "Кахадзе Мир Наумович", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
+                [{contents: "Канаша Аза Карповна", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
+                [{contents: "Державина Христина Юлиевна", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}],
+                [{contents: "Сарнычева Инга Тимуровна", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
+                [{contents: "Решетов Данила Куприянович", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
+                [{contents: "Глазков Кондратий Чеславович", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
+                [{contents: "Щавлева Вероника Семеновна", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
+                [{contents: "Буркова Майя Семеновна", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}]
+            ];
+
+            let contents = templates.getTableHTML(tabs, header, rows);
+
+            return templates.getPageHTML(contents, this.entityId, this.pageTitle);
         };
 
         this.deselectAllButtons = function () {
