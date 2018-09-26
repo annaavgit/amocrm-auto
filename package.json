@@ -4,7 +4,8 @@
   "description": "Виджет служит для расчета сдельной зарплаты для инструкторов автошкол",
   "main": "script.js",
   "scripts": {
-    "build": "mkdir -p build && zip -r build/widget.zip *",
+    "build:test": "cd deploy && ./buildWidget.sh test",
+    "build:production": "cd deploy && ./buildWidget.sh production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

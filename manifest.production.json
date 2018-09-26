@@ -1,0 +1,36 @@
+{
+  "widget": {
+    "name": "widget.name",
+    "description": "widget.description",
+    "short_description": "widget.short_description",
+    "code": "workaholics_auto",
+    "secret_key": "03c38c1bc6025ed0f5844a3a8f926a93fd766c59f6956fe4a021d644626c5155",
+    "version": "1.0.0",
+    "interface_version": 2,
+    "init_once": false,
+    "locale": [
+      "ru"
+    ],
+    "installation": true
+  },
+  "locations": [
+    "everywhere"
+  ],
+  "settings": {
+    "login": {
+      "name": "settings.login",
+      "type": "text",
+      "required": true
+    },
+    "api_key": {
+      "name": "settings.api_key",
+      "type": "text",
+      "required": true
+    },
+    "account": {
+      "name": "settings.account",
+      "type": "text",
+      "required": true
+    }
+  }
+}

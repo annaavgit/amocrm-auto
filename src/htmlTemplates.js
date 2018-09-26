@@ -170,13 +170,13 @@ define(['jquery'], function ($) {
             let itemsHTML = [];
             Object.keys(items).forEach(function (itemCode) {
                 let itemText = items[itemCode];
-                let itemHTML = "<li class=\"aside__list-item \">\n" +
+                let itemHTML = "<li class=\"aside__list-item aside__list-item--custom\">\n" +
                 "    <a href=\"#\" data-code=\""+itemCode+"\" class=\"aside__list-item-link navigate-link-nodecor h-text-overflow js-navigate-link js-list-contacts-caption-link\">"+itemText+"</a>\n" +
                 "</li>";
                 itemsHTML.push(itemHTML);
             });
 
-            return "<div class=\"aside aside-toggleable aside-hover aside-hover-catalogs aside-visible aside-expanded\" id=\"aside-hover\">\n" +
+            return "<div class=\"aside aside--custom aside-toggleable aside-hover aside-hover-catalogs aside-visible aside-expanded\" id=\"aside-hover\">\n" +
                 "    <div class=\"aside__top\"><h2 class=\"aside__head\">"+title+"</h2></div>\n" +
                 "    <div class=\"aside__inner aside__inner_has-footer\">\n" +
                 "        <div class=\"aside__common-settings custom-scroll\">\n" +
@@ -188,6 +188,20 @@ define(['jquery'], function ($) {
                 "        </div>\n" +
                 "    </div>\n" +
                 "</div>";
-        }
-    }
+        };
+
+        this.getCardHTML = function (title, text) {
+            return "<div class=\"widget-category-wrapper user-integrations no-buttons-in-caption\" id=\"category-wrapper-user-integrations\">\n" +
+                "    <div class=\"user-integrations-wrapper\">\n" +
+                "        <div class=\"widget-title\">"+title+"</div>\n" +
+                "        <div class=\"user-integrations-description-wrapper\"></div>\n" +
+                "        <div class=\"content__widget__note__wrapper bottom\">\n" +
+                "            <div class=\"content__widget__note bottom\">\n" +
+                "                <p>"+text+"</p>\n" +
+                "            </div>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</div>";
+        };
+    };
 });

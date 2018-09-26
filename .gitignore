@@ -1,2 +1,8 @@
 .idea/
 build/
+deploy/uploadCookies.txt
+.env
+.env.test
+.env.production
+.env.old
+manifest.old.json

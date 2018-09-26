@@ -1,4 +1,4 @@
-define(['jquery', './htmlTemplates.js'], function ($, templates) {
+define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, pages) {
     return function (widgetCode, settings) {
         this.triggerId = widgetCode + '-mainMenuTrigger';
         this.entityId = widgetCode + 'Widget';
@@ -7,42 +7,12 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
         this.pageTitle = 'Управление автошколой';
         this.iconClass = "icon-settings";
 
+        this.isSideMenuVisible = false;
         this.actionsBindSuccess = false;
 
-        this.getPageHTML = function () {
-            let tabs = ["Группа 1", "Группа 2", "Группа 3"];
-            let header = [
-                {title: "ФИО инструктора", width: "30%", dataType: "name"},
-                {title: "Регион 1", width: "35%", dataType: "custom"},
-                {title: "Регион 2", width: "35%", dataType: "custom"}
-            ];
-
-            let rows = [
-                [{contents: "Комягина Тамара Георгиевна", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
-                [{contents: "Пелёвина Анна Владиленовна", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
-                [{contents: "Лагутин Сергей Аполлинариевич", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
-                [{contents: "Щукин Григорий Венедиктович", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
-                [{contents: "Ягеман Моисей Назарович", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}],
-                [{contents: "Бубнов Захар Титович", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
-                [{contents: "Пономарева Элеонора Ростиславовна", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
-                [{contents: "Арцишевский Мир Геннадиевич", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
-                [{contents: "Палванова Регина Родионовна", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
-                [{contents: "Колбягина Берта Петровна", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}],
-                [{contents: "Истлентьева Кристина Давидовна", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
-                [{contents: "Нагиева Алла Романовна", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
-                [{contents: "Кахадзе Мир Наумович", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
-                [{contents: "Канаша Аза Карповна", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
-                [{contents: "Державина Христина Юлиевна", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}],
-                [{contents: "Сарнычева Инга Тимуровна", dataType: "name"}, {contents: "40%", dataType: "custom"}, {contents: "20%", dataType: "custom"}],
-                [{contents: "Решетов Данила Куприянович", dataType: "name"}, {contents: "22%", dataType: "custom"}, {contents: "74%", dataType: "custom"}],
-                [{contents: "Глазков Кондратий Чеславович", dataType: "name"}, {contents: "100%", dataType: "custom"}, {contents: "100%", dataType: "custom"}],
-                [{contents: "Щавлева Вероника Семеновна", dataType: "name"}, {contents: "54%", dataType: "custom"}, {contents: "12%", dataType: "custom"}],
-                [{contents: "Буркова Майя Семеновна", dataType: "name"}, {contents: "63%", dataType: "custom"}, {contents: "51%", dataType: "custom"}]
-            ];
-
-            let contents = templates.getTableHTML(tabs, header, rows);
-
-            return templates.getPageHTML(contents, this.entityId, this.pageTitle);
+        this.getPageHTML = function (pageCode) {
+            let page = pages[pageCode];
+            return page.getPageHTML(this.entityId);
         };
 
         this.deselectAllButtons = function () {
@@ -53,12 +23,33 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
             $('.nav__menu__item--custom[data-entity="' + this.entityId + '"]').addClass('nav__menu__item-selected');
         };
 
-        this.showPage = function () {
-            this.deselectAllButtons();
-            this.selectMainMenuButton();
+        this.renderSideMenu = function () {
+            let sideMenuItems = {
+                groups: "Группы",
+                teachers: "Преподаватели",
+                schedule: "График занятий",
+                instructors: "Инструкторы",
+                salary: "Зарплаты инструкторов",
+                profiles: "Личные данные инструкторов",
+                alarms: "Напоминания"
+            };
 
-            let pageHTML = this.getPageHTML();
+            sideMenuItems = {};
+            Object.keys(pages).forEach(function (pageCode) {
+                let pageTitle = pages[pageCode].pageTitle;
+                sideMenuItems[pageCode] = pageTitle;
+            });
+
+            let sideMenuTitle = "Автошкола";
+
+            let sideMenuHTML = templates.getAsideMenuHTML(sideMenuTitle, sideMenuItems);
+            $('#left_menu').append(sideMenuHTML);
+        };
+
+        this.showPage = function (pageCode) {
+            let pageHTML = this.getPageHTML(pageCode);
             $('#page_holder').html(pageHTML);
+
             return true;
         };
 
@@ -71,26 +62,26 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
         };
 
         this.showSideMenu = function () {
-            let sideMenuItems = {
-                groups: "Группы",
-                teachers: "Преподаватели",
-                schedule: "График занятий",
-                instructors: "Инструкторы",
-                salary: "Зарплаты инструкторов",
-                profiles: "Личные данные инструкторов",
-                alarms: "Напоминания"
-            };
-
-            let sideMenuTitle = "Автошкола";
-
-            let sideMenuHTML = templates.getAsideMenuHTML(sideMenuTitle, sideMenuItems);
-            $('body').append(sideMenuHTML);
+            $('#left_menu').addClass('h-elevated');
+            this.renderSideMenu();
             this.showSideOverlay();
+            this.isSideMenuVisible = true;
         };
 
         this.hideSideMenu = function () {
-            $('.aside').remove();
+            $('.aside--custom').remove();
+            $('#left_menu').removeClass('h-elevated');
             this.hideSideOverlay();
+            this.isSideMenuVisible = false;
+        };
+
+        this.toggleSideMenu = function () {
+            if (this.isSideMenuVisible) {
+                this.hideSideMenu();
+            }
+            else {
+                this.showSideMenu();
+            }
         };
 
         this.addButtonToMainMenu = function (afterButtonCode) {
@@ -126,7 +117,24 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
 
             if (isGoAway) {
                 $('#nav_menu [data-entity='+ this.entityId +']').removeClass('nav__menu__item-selected');
+                this.hideSideMenu();
             }
+        };
+
+        this.menuItemClicked = function (event) {
+            event.preventDefault();
+            let pageCode = $(event.currentTarget).data('code');
+            this.showPage(pageCode);
+            this.hideSideMenu();
+            this.selectMainMenuButton();
+
+            return false;
+        };
+
+        this.widgetClickedInMainMenu = function (event) {
+            this.deselectAllButtons();
+            this.selectMainMenuButton();
+            this.toggleSideMenu();
         };
 
         this.bindActions = function () {
@@ -134,9 +142,10 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
                 return;
             }
 
-            $('#'+this.triggerId).on('click', this.showPage.bind(this));
-            $('#'+this.triggerId).hover(this.showSideMenu.bind(this), this.hideSideMenu.bind(this));
-            $('.nav__menu__item').on('click', this.checkGoAwayAndDeselectButton.bind(this));
+            $(document).on('click', '#'+this.triggerId, this.widgetClickedInMainMenu.bind(this));
+            $(document).on('click', '.nav__menu__item', this.checkGoAwayAndDeselectButton.bind(this));
+            $(document).on('click', '.aside__list-item--custom a', this.menuItemClicked.bind(this));
+
             this.actionsBindSuccess = true;
         };
 
