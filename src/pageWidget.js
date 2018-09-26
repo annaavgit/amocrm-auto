@@ -62,6 +62,37 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
             return true;
         };
 
+        this.showSideOverlay = function () {
+            $('.left-menu-overlay').addClass("default-overlay-visible hover-overlay");
+        };
+
+        this.hideSideOverlay = function () {
+            $('.left-menu-overlay').removeClass("default-overlay-visible hover-overlay");
+        };
+
+        this.showSideMenu = function () {
+            let sideMenuItems = {
+                groups: "Группы",
+                teachers: "Преподаватели",
+                schedule: "График занятий",
+                instructors: "Инструкторы",
+                salary: "Зарплаты инструкторов",
+                profiles: "Личные данные инструкторов",
+                alarms: "Напоминания"
+            };
+
+            let sideMenuTitle = "Автошкола";
+
+            let sideMenuHTML = templates.getAsideMenuHTML(sideMenuTitle, sideMenuItems);
+            $('body').append(sideMenuHTML);
+            this.showSideOverlay();
+        };
+
+        this.hideSideMenu = function () {
+            $('.aside').remove();
+            this.hideSideOverlay();
+        };
+
         this.addButtonToMainMenu = function (afterButtonCode) {
             if (!afterButtonCode) {
                 afterButtonCode = 'leads'; //['leads', 'todo', 'catalogs', 'mail', 'stats', 'settings']
@@ -104,6 +135,7 @@ define(['jquery', './htmlTemplates.js'], function ($, templates) {
             }
 
             $('#'+this.triggerId).on('click', this.showPage.bind(this));
+            $('#'+this.triggerId).hover(this.showSideMenu.bind(this), this.hideSideMenu.bind(this));
             $('.nav__menu__item').on('click', this.checkGoAwayAndDeselectButton.bind(this));
             this.actionsBindSuccess = true;
         };

@@ -102,7 +102,7 @@ define(['jquery'], function ($) {
 
             return "<ul class=\"list__tabs \" id=\"list__tabs\">\n" +
                 tabsHTML.join("\n") +
-                "</ul>"
+                "</ul>";
         };
 
         this.getTableHTML = function (tabs, header, rows) {
@@ -167,7 +167,14 @@ define(['jquery'], function ($) {
         };
 
         this.getAsideMenuHTML = function (title, items) {
-            
+            let itemsHTML = [];
+            Object.keys(items).forEach(function (itemCode) {
+                let itemText = items[itemCode];
+                let itemHTML = "<li class=\"aside__list-item \">\n" +
+                "    <a href=\"#\" data-code=\""+itemCode+"\" class=\"aside__list-item-link navigate-link-nodecor h-text-overflow js-navigate-link js-list-contacts-caption-link\">"+itemText+"</a>\n" +
+                "</li>";
+                itemsHTML.push(itemHTML);
+            });
 
             return "<div class=\"aside aside-toggleable aside-hover aside-hover-catalogs aside-visible aside-expanded\" id=\"aside-hover\">\n" +
                 "    <div class=\"aside__top\"><h2 class=\"aside__head\">"+title+"</h2></div>\n" +
@@ -175,15 +182,7 @@ define(['jquery'], function ($) {
                 "        <div class=\"aside__common-settings custom-scroll\">\n" +
                 "            <div class=\"aside__common-settings__list_wrapper\" id=\"aside__list-wrapper\">\n" +
                 "                <ul class=\"aside__list\">\n" +
-                "                    <li class=\"aside__list-item \">\n" +
-                "                        <a href=\"/contacts/list/contacts/\" class=\"aside__list-item-link navigate-link-nodecor h-text-overflow js-navigate-link js-list-contacts-caption-link\">Контакты</a>\n" +
-                "                    </li>\n" +
-                "                    <li class=\"aside__list-item \">\n" +
-                "                        <a href=\"/contacts/list/companies/\" class=\"aside__list-item-link navigate-link-nodecor h-text-overflow js-navigate-link js-list-contacts-caption-link\">Компании</a>\n" +
-                "                    </li>\n" +
-                "                    <li class=\"aside__list-item \">\n" +
-                "                        <a href=\"/contacts/list/\" class=\"aside__list-item-link navigate-link-nodecor h-text-overflow js-navigate-link js-list-contacts-caption-link\">Все контакты и компании</a>\n" +
-                "                    </li>\n" +
+                itemsHTML.join("\n") + "\n" +
                 "                </ul>\n" +
                 "            </div>\n" +
                 "        </div>\n" +
