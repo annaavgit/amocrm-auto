@@ -5,7 +5,8 @@ define([
     './pages/profiles.js',
     './pages/salary.js',
     './pages/schedule.js',
-    './pages/teachers.js'
+    './pages/teachers.js',
+    './pages/debt.js'
 ], function (
     AlarmsPage,
     GroupsPage,
@@ -13,7 +14,8 @@ define([
     ProfilesPage,
     SalaryPage,
     SchedulePage,
-    TeachersPage
+    TeachersPage,
+    DebtPage
 ) {
     return {
         groups: new GroupsPage(),
@@ -22,6 +24,7 @@ define([
         instructors: new InstructorsPage(),
         salary: new SalaryPage(),
         profiles: new ProfilesPage(),
-        alarms: new AlarmsPage()
+        alarms: new AlarmsPage(),
+        debt: new DebtPage()
     };
 });

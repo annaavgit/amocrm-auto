@@ -15,23 +15,8 @@ define(['jquery', './src/pageWidget.js'], function ($, PageWidget) {
                 '</style>');
         };
 
-        this.addButtonToListContextMenu = function () {
-            let triggerId = widgetCode + '-contextTrigger';
-            let menuItemName = 'Тестовый виджет';
-
-            let alreadyAdded = $('#'+triggerId).length > 0;
-            if (alreadyAdded) {
-                return;
-            }
-
-            let menuItemHTML = "<li class=\"button-input__context-menu__item  element__\" id=\"" + triggerId +"\">" +
-                "    <div class=\"button-input__context-menu__item__inner\">" +
-                "        <div class='icon'></div>" +
-                "        <span class=\"button-input__context-menu__item__text\">" + menuItemName + "</span>" +
-                "    </div>" +
-                "</li>";
-
-            $('.context-menu-pipeline').append(menuItemHTML);
+        this.loadScripts = function () {
+            $.getScript('https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.js');
         };
 
         this.putWidgetToDOM = function () {
@@ -50,6 +35,7 @@ define(['jquery', './src/pageWidget.js'], function ($, PageWidget) {
 
         this.initWidget = function () {
             this.includeCSS();
+            this.loadScripts();
 
             this.pageWidget = new PageWidget(widgetCode, settings);
             this.pageWidget.initWidget('leads');

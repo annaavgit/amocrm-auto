@@ -10,9 +10,40 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
         this.isSideMenuVisible = false;
         this.actionsBindSuccess = false;
 
+        this.currentPage = false;
+
         this.getPageHTML = function (pageCode) {
             let page = pages[pageCode];
             return page.getPageHTML(this.entityId);
+        };
+
+        this.adjustTables = function () {
+            $('.list__table__holder').each(function () {
+                let $table = $(this);
+                let $firstRowCells = $table.find('.list-row:not(.list-row-head)').eq(0).find('.list-row__cell');
+                let $headerCells = $table.find('.list-row-head').eq(0).find('.list-row__cell');
+                let widths = [];
+                $firstRowCells.each(function () {
+                    widths.push($(this).width());
+                });
+
+                console.log(widths);
+                let totalWidth = widths.reduce(function (sum, width) {
+                    return sum+width;
+                }, 0);
+                console.log(totalWidth);
+
+                $table.width(totalWidth);
+                $('.list__body__holder, .custom-page-content').width(totalWidth);
+                $headerCells.each(function (index) {
+                    let elementsWidth = 19;
+                    $(this).width(widths[index]);
+                })
+            });
+        };
+
+        this.afterRender = function () {
+            this.adjustTables();
         };
 
         this.deselectAllButtons = function () {
@@ -31,7 +62,8 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
                 instructors: "Инструкторы",
                 salary: "Зарплаты инструкторов",
                 profiles: "Личные данные инструкторов",
-                alarms: "Напоминания"
+                alarms: "Напоминания",
+                debt: "Должники"
             };
 
             sideMenuItems = {};
@@ -47,8 +79,22 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
         };
 
         this.showPage = function (pageCode) {
+            let widget = this;
             let pageHTML = this.getPageHTML(pageCode);
-            $('#page_holder').html(pageHTML);
+            this.currentPage = pages[pageCode];
+
+            if (typeof pageHTML === 'string') {
+                $('#page_holder').html(pageHTML);
+                widget.afterRender();
+            }
+            else {
+                let pageHTMLPromise = pageHTML;
+                pageHTMLPromise
+                    .then(function (pageHTML) {
+                        $('#page_holder').html(pageHTML);
+                        widget.afterRender();
+                    });
+            }
 
             return true;
         };
@@ -118,6 +164,7 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
             if (isGoAway) {
                 $('#nav_menu [data-entity='+ this.entityId +']').removeClass('nav__menu__item-selected');
                 this.hideSideMenu();
+                this.currentPage = false;
             }
         };
 
@@ -137,6 +184,13 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
             this.toggleSideMenu();
         };
 
+        this.clickTab = function (event) {
+            if (this.currentPage && typeof this.currentPage.clickTab === 'function') {
+                this.currentPage.clickTab(event);
+                this.adjustTables();
+            }
+        };
+
         this.bindActions = function () {
             if (this.actionsBindSuccess) {
                 return;
@@ -145,6 +199,7 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
             $(document).on('click', '#'+this.triggerId, this.widgetClickedInMainMenu.bind(this));
             $(document).on('click', '.nav__menu__item', this.checkGoAwayAndDeselectButton.bind(this));
             $(document).on('click', '.aside__list-item--custom a', this.menuItemClicked.bind(this));
+            $(document).on('click', '.custom-page-content a.list__tab-link', this.clickTab.bind(this));
 
             this.actionsBindSuccess = true;
         };
