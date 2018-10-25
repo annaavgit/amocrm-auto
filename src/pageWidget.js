@@ -1,4 +1,4 @@
-define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, pages) {
+define(['jquery', 'lib/common/hs', './htmlTemplates.js', './routes.js'], function ($, HandScroll, templates, pages) {
     return function (widgetCode, settings) {
         this.triggerId = widgetCode + '-mainMenuTrigger';
         this.entityId = widgetCode + 'Widget';
@@ -11,40 +11,6 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
         this.actionsBindSuccess = false;
 
         this.currentPage = false;
-
-        this.getPageHTML = function (pageCode) {
-            let page = pages[pageCode];
-            return page.getPageHTML(this.entityId);
-        };
-
-        this.adjustTables = function () {
-            $('.list__table__holder').each(function () {
-                let $table = $(this);
-                let $firstRowCells = $table.find('.list-row:not(.list-row-head)').eq(0).find('.list-row__cell');
-                let $headerCells = $table.find('.list-row-head').eq(0).find('.list-row__cell');
-                let widths = [];
-                $firstRowCells.each(function () {
-                    widths.push($(this).width());
-                });
-
-                console.log(widths);
-                let totalWidth = widths.reduce(function (sum, width) {
-                    return sum+width;
-                }, 0);
-                console.log(totalWidth);
-
-                $table.width(totalWidth);
-                $('.list__body__holder, .custom-page-content').width(totalWidth);
-                $headerCells.each(function (index) {
-                    let elementsWidth = 19;
-                    $(this).width(widths[index]);
-                })
-            });
-        };
-
-        this.afterRender = function () {
-            this.adjustTables();
-        };
 
         this.deselectAllButtons = function () {
             $('.nav__menu__item-selected').removeClass('nav__menu__item-selected');
@@ -78,25 +44,10 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
             $('#left_menu').append(sideMenuHTML);
         };
 
-        this.showPage = function (pageCode) {
-            let widget = this;
-            let pageHTML = this.getPageHTML(pageCode);
-            this.currentPage = pages[pageCode];
-
-            if (typeof pageHTML === 'string') {
-                $('#page_holder').html(pageHTML);
-                widget.afterRender();
-            }
-            else {
-                let pageHTMLPromise = pageHTML;
-                pageHTMLPromise
-                    .then(function (pageHTML) {
-                        $('#page_holder').html(pageHTML);
-                        widget.afterRender();
-                    });
-            }
-
-            return true;
+        this.renderPage = function (pageCode) {
+            let page = pages[pageCode];
+            this.currentPage = page;
+            return page.renderPage();
         };
 
         this.showSideOverlay = function () {
@@ -171,7 +122,7 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
         this.menuItemClicked = function (event) {
             event.preventDefault();
             let pageCode = $(event.currentTarget).data('code');
-            this.showPage(pageCode);
+            this.renderPage(pageCode);
             this.hideSideMenu();
             this.selectMainMenuButton();
 
@@ -184,13 +135,6 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
             this.toggleSideMenu();
         };
 
-        this.clickTab = function (event) {
-            if (this.currentPage && typeof this.currentPage.clickTab === 'function') {
-                this.currentPage.clickTab(event);
-                this.adjustTables();
-            }
-        };
-
         this.bindActions = function () {
             if (this.actionsBindSuccess) {
                 return;
@@ -199,7 +143,6 @@ define(['jquery', './htmlTemplates.js', './routes.js'], function ($, templates, 
             $(document).on('click', '#'+this.triggerId, this.widgetClickedInMainMenu.bind(this));
             $(document).on('click', '.nav__menu__item', this.checkGoAwayAndDeselectButton.bind(this));
             $(document).on('click', '.aside__list-item--custom a', this.menuItemClicked.bind(this));
-            $(document).on('click', '.custom-page-content a.list__tab-link', this.clickTab.bind(this));
 
             this.actionsBindSuccess = true;
         };

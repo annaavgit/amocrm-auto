@@ -1,25 +1,17 @@
 define(['jquery'], function ($) {
     return new function () {
         this.getTableHeadCellHTML = function (title, width, dataType) {
-            return "<div class=\"list-row__cell js-hs-prevent js-resizable-cell list-row__cell-head cell-head js-cell-head js-cell-head_sortable list-row__cell-template-"+dataType+" cell-head_sorted ui-resizable\"\n" +
+            return "<div class=\"list-row__cell js-hs-prevent js-resizable-cell list-row__cell-head cell-head js-cell-head list-row__cell-template-"+dataType+" cell-head_sorted ui-resizable\"\n" +
                 "     data-field-template=\""+dataType+"\"\n" +
                 "     style=\"width: "+width+"; \">\n" +
                 "    <div class=\"cell-head__inner\">\n" +
                 "        <div class=\"cell-head__inner-content\">\n" +
                 "            <span class=\"cell-head__dots icon icon-v-dots\"></span>\n" +
                 "            <span class=\"cell-head__title\">"+title+"</span>\n" +
-                "            <span class=\"cell-head__icon\">\n" +
-                "                <span class=\"cell-head__icon-sortable cell-head__icon-sortable_desc\"></span>\n" +
-                "                <span class=\"cell-head__icon-close js-cell-head__icon-close\">\n" +
-                "                    <svg class=\"svg-icon svg-common--cross-close-dims\">\n" +
-                "                        <use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"#common--cross-close\"></use>\n" +
-                "                    </svg>\n" +
-                "                </span>\n" +
-                "            </span>\n" +
                 "        </div>\n" +
                 "        <div class=\"cell-head__resize-ghost\"></div>\n" +
                 "    </div>\n" +
-                "    <div class=\"ui-resizable-handle ui-resizable-e\" style=\"z-index: 90;\"></div>\n" +
+                "    <div class=\"ui-resizable-handle ui-resizable-e\"></div>\n" +
                 "</div>";
         };
 
@@ -46,13 +38,11 @@ define(['jquery'], function ($) {
                 cellGroupHTML.push("<div class=\"js-list-column list__col-group__column\" style=\"width:"+cell.width+"; \"></div>");
             }, this);
 
-            return "<div class=\"js-scroll-container list__table \" id=\"list_table\">\n" +
-                "    <div class=\"js-list-columns-group list__col-group\" id=\"list_col_group\">\n" +
-                cellGroupHTML.join("\n") +
-                "    </div>\n" +
-                "    <div class=\"list-row list-row-head js-list-row js-list-row-head \" id=\"list_head\">\n" +
-                cellHTML.join("\n") +
-                "    </div>\n" +
+            return "<div class=\"js-list-columns-group list__col-group\" id=\"list_col_group\">\n" +
+                    cellGroupHTML.join("\n") +
+                "</div>\n" +
+                "<div class=\"list-row list-row-head js-list-row js-list-row-head \" id=\"list_head\">\n" +
+                    cellHTML.join("\n") +
                 "</div>"
         };
 
@@ -112,10 +102,24 @@ define(['jquery'], function ($) {
                 return accumulator;
             }, []);
 
+            return
+                "<div class=\"list__table__holder js-hs-scroller custom-scroll\" style=\"margin-bottom: 0px;\">\n" +
+                "    <div class=\"list__table__holder js-hs-scroller custom-scroll\" style=\"margin-bottom: 0px;\">\n" +
+                         this.getTableTabsHTML(tabs) +
+                "        <div class=\"js-scroll-container list__table \" id=\"list_table\">\n" +
+                            this.getTableHeaderHTML(header) +
+                            rowsHTML.join("\n") +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</div>"
+        };
+
+        this.getEmptyTableHTML = function () {
             return "<div class=\"list__table__holder js-hs-scroller custom-scroll\" style=\"margin-bottom: 0px;\">\n" +
-                this.getTableTabsHTML(tabs) +
-                this.getTableHeaderHTML(header) +
-                rowsHTML.join("\n") +
+                "    <div class=\"list__table__holder js-hs-scroller custom-scroll\" style=\"margin-bottom: 0px;\">\n" +
+                "        <div class=\"js-scroll-container list__table \" id=\"list_table\">\n" +
+                "        </div>\n" +
+                "    </div>\n" +
                 "</div>"
         };
 
@@ -144,7 +148,7 @@ define(['jquery'], function ($) {
 
 
         this.getPageHTML = function (contentsHTML, entityId, pageTitle) {
-            return "<div class=\"list  list-contacts list-no-sidebar\" id=\"list_page_holder\">\n" +
+            return "<div class=\"list list-leads\" id=\"list_page_holder\">\n" +
                 "    <div class=\"list__body clearfix\">\n" +
                 "        <div id=\"list__body-right\" class=\"list__body-right list__body-right_has-footer\">\n" +
                 "            <div class=\"list__body-right__top\">\n" +
@@ -153,12 +157,12 @@ define(['jquery'], function ($) {
                 "                          data-entity=\"" + entityId +"\">" + pageTitle + "</span>\n" +
                 "                </div>\n" +
                 "                <div class=\"list__top__actions\">\n" +
-                this.getPageTopActionsHTML() +
+                                    this.getPageTopActionsHTML() +
                 "                </div>\n" +
                 "            </div>\n" +
                 "            <div class=\"list__body__holder list__body__holder-table js-hs-wrapper hs-wrapper_hide-boundary hs-wrapper\" id=\"list_holder\">\n" +
                 "                <div class=\"custom-page-content\">\n" +
-                contentsHTML +
+                                    contentsHTML +
                 "                </div>\n" +
                 "            </div>\n" +
                 "        </div>\n" +

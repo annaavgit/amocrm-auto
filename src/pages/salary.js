@@ -8,5 +8,9 @@ define(['jquery', '../htmlTemplates.js'], function ($, templates) {
 
             return templates.getPageHTML(contents, entityId, this.pageTitle);
         };
+
+        this.renderPage = function () {
+            $('#page_holder').html(this.getPageHTML(''));
+        }
     }
 });
